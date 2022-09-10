@@ -119,12 +119,7 @@ class RadarPage extends StatelessWidget {
         ),
         Align(
           alignment: Alignment.topRight,
-          child: Image.asset(
-            'assets/bg_right.png',
-            height: size.height,
-            width: RadarConstants.rightPos,
-            fit: BoxFit.fill,
-          ),
+          child: _controlButtons(context),
         ),
         Align(
           alignment: Alignment.bottomCenter,
@@ -189,19 +184,6 @@ class RadarPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                Positioned(
-                  right: 10.w,
-                  bottom: 0,
-                  child: FlatButton(
-                    onPressed: () => _showControlDialog(context),
-                    color: Colors.white,
-                    child: Text(
-                      'ĐIỀU KHIỂN',
-                      style: TextStyle(
-                          fontSize: 22.sp, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
               ]),
             ),
           )
@@ -210,12 +192,80 @@ class RadarPage extends StatelessWidget {
     );
   }
 
-  void _showControlDialog(BuildContext context) {
+  Widget _controlButtons(BuildContext context) {
+    return SizedBox(
+      width: 200.w,
+      child: Column(
+        children: [
+          Expanded(
+            child: _buttonItem(
+                context,
+                'CHÂN KÍCH 1',
+                () => _showControlDialog(
+                    context, 'CHÂN KÍCH 1', ControlType.chanKich1)),
+          ),
+          Expanded(
+            child: _buttonItem(
+                context,
+                'CHÂN KÍCH 2',
+                () => _showControlDialog(
+                    context, 'CHÂN KÍCH 2', ControlType.chanKich2)),
+          ),
+          Expanded(
+            child: _buttonItem(
+                context,
+                'CHÂN KÍCH 3',
+                () => _showControlDialog(
+                    context, 'CHÂN KÍCH 3', ControlType.chanKich3)),
+          ),
+          Expanded(
+            child: _buttonItem(
+                context,
+                'NÂNG HẠ ĂNGTEN',
+                () => _showControlDialog(
+                    context, 'NÂNG HẠ ĂNGTEN', ControlType.nangHaAngten)),
+          ),
+          Expanded(
+            child: _buttonItem(
+                context,
+                'QUAY ĂNGTEN',
+                () => _showControlDialog(
+                    context, 'QUAY ĂNGTEN', ControlType.quayAngten)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buttonItem(
+      BuildContext context, String label, VoidCallback onPressed) {
+    return SizedBox(
+      width: double.maxFinite,
+      child: FlatButton(
+        padding: EdgeInsets.all(16),
+        onPressed: onPressed,
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+            side: BorderSide(
+                color: Colors.green, width: 1, style: BorderStyle.solid)),
+        child: Text(
+          label,
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  void _showControlDialog(
+      BuildContext context, String title, ControlType type) {
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) {
-          return ControlDialog();
+          return ControlDialog(
+            title: title,
+            type: type,
+          );
         });
   }
 }

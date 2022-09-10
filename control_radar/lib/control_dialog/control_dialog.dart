@@ -1,5 +1,4 @@
 import 'package:controlradar/bloc/remote_bloc/remote_radar_bloc.dart';
-import 'package:controlradar/bloc/update_data_bloc/bloc.dart';
 import 'package:controlradar/constants/mqtt_topic.dart';
 import 'package:controlradar/models/mqtt/mqtt.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
+enum ControlType { chanKich1, chanKich2, chanKich3, nangHaAngten, quayAngten }
+
 class ControlDialog extends StatefulWidget {
+  final String title;
+  final ControlType type;
+
+  ControlDialog({@required this.title, @required this.type});
+
   @override
   _ControlDialogState createState() => _ControlDialogState();
 }
@@ -32,19 +38,68 @@ class _ControlDialogState extends State<ControlDialog> {
   }
 
   void _start() {
-    _sendAction('start');
+    if (widget.type == ControlType.quayAngten) {
+      _sendAction('quay_12');
+    }
   }
 
   void _stop() {
-    _sendAction('stop');
+    switch (widget.type) {
+      case ControlType.chanKich1:
+        _sendAction('dung_chan_kich_1');
+        break;
+      case ControlType.chanKich2:
+        _sendAction('dung_chan_kich_2');
+        break;
+      case ControlType.chanKich3:
+        _sendAction('dung_chan_kich_3');
+        break;
+      case ControlType.nangHaAngten:
+        _sendAction('dung_angten');
+        break;
+      case ControlType.quayAngten:
+        _sendAction('dung_quay_angten');
+        break;
+    }
   }
 
   void _up() {
-    _sendAction('nang');
+    switch (widget.type) {
+      case ControlType.chanKich1:
+        _sendAction('nang_chan_kich_1');
+        break;
+      case ControlType.chanKich2:
+        _sendAction('nang_chan_kich_2');
+        break;
+      case ControlType.chanKich3:
+        _sendAction('nang_chan_kich_3');
+        break;
+      case ControlType.nangHaAngten:
+        _sendAction('nang_angten');
+        break;
+      case ControlType.quayAngten:
+        break;
+    }
   }
 
   void _down() {
-    _sendAction('ha');
+    switch (widget.type) {
+      case ControlType.chanKich1:
+        _sendAction('ha_chan_kich_1');
+        break;
+      case ControlType.chanKich2:
+        _sendAction('ha_chan_kich_2');
+        break;
+      case ControlType.chanKich3:
+        _sendAction('ha_chan_kich_3');
+        break;
+      case ControlType.nangHaAngten:
+        _sendAction('ha_angten');
+        break;
+      case ControlType.quayAngten:
+        _sendAction('ha_angten');
+        break;
+    }
   }
 
   void _showErrorDialog() {
@@ -82,18 +137,12 @@ class _ControlDialogState extends State<ControlDialog> {
         height: ScreenUtil().screenHeight / 1.5,
         width: ScreenUtil().screenWidth / 1.5,
         child: Dialog(
-//        title: _title(),
           child: Padding(
             padding: EdgeInsets.only(
                 top: 32.w, bottom: 16.w, right: 32.w, left: 32.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-//        mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-//          _sliderSpeedWidget(),
-//          SizedBox(
-//            height: 32.w,
-//          ),
                 _title(),
                 SizedBox(
                   height: ScreenUtil().screenWidth / 20,
@@ -117,7 +166,7 @@ class _ControlDialogState extends State<ControlDialog> {
           child: Text(
             'ĐÓNG',
             style: TextStyle(
-                fontSize: 22.sp,
+                fontSize: 18.sp,
                 color: Colors.white,
                 fontWeight: FontWeight.bold),
           ),
@@ -130,7 +179,7 @@ class _ControlDialogState extends State<ControlDialog> {
   Widget _title() {
     return Center(
       child: Text(
-        'Trình điều khiển',
+        widget.title,
         style: TextStyle(
             fontSize: 26.sp, color: Colors.black, fontWeight: FontWeight.bold),
       ),
@@ -171,47 +220,46 @@ class _ControlDialogState extends State<ControlDialog> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _aActionButton(
-                    Icon(
-                      Icons.arrow_upward,
-                      size: 72.w,
-                    ),
-                    'NÂNG',
-                    _up),
-                _aActionButton(
-                    Icon(
-                      Icons.arrow_downward,
-                      size: 72.w,
-                    ),
-                    'HẠ',
-                    _down),
-              ],
+            Visibility(
+              visible: widget.type == ControlType.quayAngten,
+              child: _aActionButton(
+                  Icon(
+                    Icons.play_arrow,
+                    size: 72.w,
+                  ),
+                  '12',
+                  _start),
+            ),
+            Visibility(
+              visible: widget.type != ControlType.quayAngten,
+              child: _aActionButton(
+                  Icon(
+                    Icons.arrow_upward,
+                    size: 72.w,
+                  ),
+                  'LÊN',
+                  _up),
             ),
             SizedBox(
               height: ScreenUtil().screenWidth / 25,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _aActionButton(
-                    Icon(
-                      Icons.play_arrow,
-                      size: 72.w,
-                    ),
-                    'QUAY',
-                    _start),
-                _aActionButton(
-                    Icon(
-                      Icons.stop,
-                      size: 72.w,
-                    ),
-                    'DỪNG',
-                    _stop),
-              ],
+            _aActionButton(
+                Icon(
+                  Icons.stop,
+                  size: 72.w,
+                ),
+                'DỪNG',
+                _stop),
+            SizedBox(
+              height: ScreenUtil().screenWidth / 25,
             ),
+            _aActionButton(
+                Icon(
+                  Icons.arrow_downward,
+                  size: 72.w,
+                ),
+                'XUỐNG',
+                _down),
           ],
         ),
       ),
