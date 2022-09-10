@@ -118,10 +118,6 @@ class RadarPage extends StatelessWidget {
           ),
         ),
         Align(
-          alignment: Alignment.topRight,
-          child: _controlButtons(context),
-        ),
-        Align(
           alignment: Alignment.bottomCenter,
           child: Image.asset(
             'assets/bg_bottom.png',
@@ -129,6 +125,10 @@ class RadarPage extends StatelessWidget {
             width: size.width,
             fit: BoxFit.fill,
           ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: _controlButtons(context),
         ),
         SafeArea(
           child: Align(
@@ -200,37 +200,37 @@ class RadarPage extends StatelessWidget {
           Expanded(
             child: _buttonItem(
                 context,
-                'CHÂN KÍCH 1',
+                'QUAY ĂNGTEN',
                 () => _showControlDialog(
-                    context, 'CHÂN KÍCH 1', ControlType.chanKich1)),
+                    context, 'QUAY ĂNGTEN', ControlType.quayAngten)),
           ),
           Expanded(
             child: _buttonItem(
                 context,
-                'CHÂN KÍCH 2',
-                () => _showControlDialog(
-                    context, 'CHÂN KÍCH 2', ControlType.chanKich2)),
-          ),
-          Expanded(
-            child: _buttonItem(
-                context,
-                'CHÂN KÍCH 3',
-                () => _showControlDialog(
-                    context, 'CHÂN KÍCH 3', ControlType.chanKich3)),
-          ),
-          Expanded(
-            child: _buttonItem(
-                context,
-                'NÂNG HẠ ĂNGTEN',
+                'NÂNG/HẠ ĂNGTEN',
                 () => _showControlDialog(
                     context, 'NÂNG HẠ ĂNGTEN', ControlType.nangHaAngten)),
           ),
           Expanded(
             child: _buttonItem(
                 context,
-                'QUAY ĂNGTEN',
+                'KÍCH TRÁI',
                 () => _showControlDialog(
-                    context, 'QUAY ĂNGTEN', ControlType.quayAngten)),
+                    context, 'KÍCH TRÁI', ControlType.kichTrai)),
+          ),
+          Expanded(
+            child: _buttonItem(
+                context,
+                'KÍCH PHẢI',
+                () => _showControlDialog(
+                    context, 'KÍCH PHẢI', ControlType.kichPhai)),
+          ),
+          Expanded(
+            child: _buttonItem(
+                context,
+                'KÍCH SAU',
+                () => _showControlDialog(
+                    context, 'KÍCH SAU', ControlType.kichSau)),
           ),
         ],
       ),

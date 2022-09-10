@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 
-enum ControlType { chanKich1, chanKich2, chanKich3, nangHaAngten, quayAngten }
+enum ControlType { kichTrai, kichPhai, kichSau, nangHaAngten, quayAngten }
 
 class ControlDialog extends StatefulWidget {
   final String title;
@@ -20,15 +19,6 @@ class ControlDialog extends StatefulWidget {
 }
 
 class _ControlDialogState extends State<ControlDialog> {
-  double _currentSliderValue;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    _currentSliderValue = 20;
-    super.initState();
-  }
-
   void _sendAction(String action) {
     BlocProvider.of<RemoteRadarBloc>(context).add(RemoteAction(
         message: Message(
@@ -37,25 +27,31 @@ class _ControlDialogState extends State<ControlDialog> {
             qos: MqttQos.atMostOnce)));
   }
 
-  void _start() {
+  void _12V() {
     if (widget.type == ControlType.quayAngten) {
-      _sendAction('quay_12');
+      _sendAction('12v');
+    }
+  }
+
+  void _6V() {
+    if (widget.type == ControlType.quayAngten) {
+      _sendAction('6v');
     }
   }
 
   void _stop() {
     switch (widget.type) {
-      case ControlType.chanKich1:
-        _sendAction('dung_chan_kich_1');
+      case ControlType.kichTrai:
+        _sendAction('dung_kich_trai');
         break;
-      case ControlType.chanKich2:
-        _sendAction('dung_chan_kich_2');
+      case ControlType.kichPhai:
+        _sendAction('dung_kich_phai');
         break;
-      case ControlType.chanKich3:
-        _sendAction('dung_chan_kich_3');
+      case ControlType.kichSau:
+        _sendAction('dung_kich_sau');
         break;
       case ControlType.nangHaAngten:
-        _sendAction('dung_angten');
+        _sendAction('dung_nang_ha_angten');
         break;
       case ControlType.quayAngten:
         _sendAction('dung_quay_angten');
@@ -65,14 +61,14 @@ class _ControlDialogState extends State<ControlDialog> {
 
   void _up() {
     switch (widget.type) {
-      case ControlType.chanKich1:
-        _sendAction('nang_chan_kich_1');
+      case ControlType.kichTrai:
+        _sendAction('nang_kich_trai');
         break;
-      case ControlType.chanKich2:
-        _sendAction('nang_chan_kich_2');
+      case ControlType.kichPhai:
+        _sendAction('nang_kich_phai');
         break;
-      case ControlType.chanKich3:
-        _sendAction('nang_chan_kich_3');
+      case ControlType.kichSau:
+        _sendAction('nang_kich_sau');
         break;
       case ControlType.nangHaAngten:
         _sendAction('nang_angten');
@@ -84,20 +80,19 @@ class _ControlDialogState extends State<ControlDialog> {
 
   void _down() {
     switch (widget.type) {
-      case ControlType.chanKich1:
-        _sendAction('ha_chan_kich_1');
+      case ControlType.kichTrai:
+        _sendAction('ha_kich_trai');
         break;
-      case ControlType.chanKich2:
-        _sendAction('ha_chan_kich_2');
+      case ControlType.kichPhai:
+        _sendAction('ha_kich_phai');
         break;
-      case ControlType.chanKich3:
-        _sendAction('ha_chan_kich_3');
+      case ControlType.kichSau:
+        _sendAction('ha_kich_sau');
         break;
       case ControlType.nangHaAngten:
         _sendAction('ha_angten');
         break;
       case ControlType.quayAngten:
-        _sendAction('ha_angten');
         break;
     }
   }
@@ -186,33 +181,6 @@ class _ControlDialogState extends State<ControlDialog> {
     );
   }
 
-  Widget _sliderSpeedWidget() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Tốc độ: ',
-          style: TextStyle(fontSize: 22.sp, color: Colors.black),
-        ),
-        SfSlider(
-          min: 5.0,
-          max: 20.0,
-          value: _currentSliderValue,
-          interval: 5.0,
-          stepSize: 5,
-          showTicks: true,
-          showLabels: true,
-          enableTooltip: true,
-          onChanged: (dynamic value) {
-            setState(() {
-              if (value is double) _currentSliderValue = value;
-            });
-          },
-        ),
-      ],
-    );
-  }
-
   Widget _actionButtonsWidget() {
     return Center(
       child: SizedBox(
@@ -227,8 +195,8 @@ class _ControlDialogState extends State<ControlDialog> {
                     Icons.play_arrow,
                     size: 72.w,
                   ),
-                  '12',
-                  _start),
+                  '12V',
+                  _12V),
             ),
             Visibility(
               visible: widget.type != ControlType.quayAngten,
@@ -253,13 +221,26 @@ class _ControlDialogState extends State<ControlDialog> {
             SizedBox(
               height: ScreenUtil().screenWidth / 25,
             ),
-            _aActionButton(
-                Icon(
-                  Icons.arrow_downward,
-                  size: 72.w,
-                ),
-                'XUỐNG',
-                _down),
+            Visibility(
+              visible: widget.type != ControlType.quayAngten,
+              child: _aActionButton(
+                  Icon(
+                    Icons.arrow_downward,
+                    size: 72.w,
+                  ),
+                  'XUỐNG',
+                  _down),
+            ),
+            Visibility(
+              visible: widget.type == ControlType.quayAngten,
+              child: _aActionButton(
+                  Icon(
+                    Icons.play_arrow,
+                    size: 72.w,
+                  ),
+                  '6V',
+                  _6V),
+            ),
           ],
         ),
       ),
