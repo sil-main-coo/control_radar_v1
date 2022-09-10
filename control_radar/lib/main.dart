@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
       ],
       child: ScreenUtilInit(
         designSize: Size(1364, 697),
-        builder: () => MaterialApp(
+        builder: (ct, child) => MaterialApp(
           title: 'Control Radar',
           theme: ThemeData(
             primarySwatch: Colors.blue,
